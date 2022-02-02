@@ -16,7 +16,7 @@ public class SingleClientJPB1 {
         DataInputStream fromServer;  //get respond from the server
         Scanner input = new Scanner(System.in);
         
-        String message;
+        String message, receivedMessage;
     
         System.out.print("You need to login in order to connect to the server by type "
                  + "LOGIN follow by user name and password\n");
@@ -35,7 +35,8 @@ public class SingleClientJPB1 {
                     new DataOutputStream(socket.getOutputStream());
             
              
-             while(true) {
+             while(true)
+             {
                 System.out.print("Send command to server:\t");
                 message = input.nextLine();
                 toServer.writeUTF(message);
@@ -46,9 +47,14 @@ public class SingleClientJPB1 {
                 }
                 
                 //received message:
-                message = fromServer.readUTF();
-                System.out.println("Server says: " + message);
-             }     
+                receivedMessage = fromServer.readUTF();
+                System.out.println("Server says: " + receivedMessage);
+                
+                if(message.equalsIgnoreCase("shutdown")) { 
+                    break;
+                }
+            }  
+             
         }
         
         catch(IOException ex) {

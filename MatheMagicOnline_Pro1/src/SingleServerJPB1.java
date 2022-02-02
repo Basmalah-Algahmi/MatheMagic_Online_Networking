@@ -1,4 +1,3 @@
-
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -112,7 +111,7 @@ public class SingleServerJPB1 {
                         System.out.println("Sending solve to client");
                         //get solve command details
                         String shape= currencies[1];
-                        float redius, circumference,length, length2,perimeter, area;
+                        float radius, circumference,length, length2,perimeter, area;
                         
                         //create a solve file 
                         File solveFile = new File(userName+"_solutions.txt");
@@ -127,14 +126,14 @@ public class SingleServerJPB1 {
                         {
                             if(currencies.length==3)
                             {
-                                redius= Float.parseFloat(currencies[2]);
-                                circumference= (float)(Math.PI*2*(redius));
-                                area= (float) (Math.PI * Math.pow(redius, 2));
+                                radius= Float.parseFloat(currencies[2]);
+                                circumference= (float)(Math.PI*2*(radius));
+                                area= (float) (Math.PI * Math.pow(radius, 2));
 
-                                write.append("Redius "+redius+": Circle’s circumference is "+
+                                write.append("radius "+radius+": Circle’s circumference is "+
                                         String.format("%.2f", circumference)
                                         + " and area is "+ String.format("%.2f" ,area)+"\n");
-                                outputToClient.writeUTF("Redius "+redius+": Circle’s circumference is "+
+                                outputToClient.writeUTF("radius "+radius+": Circle’s circumference is "+
                                         String.format("%.2f", circumference)
                                         + " and area is "+ String.format("%.2f" ,area)+"\n");                          
                             }
@@ -207,7 +206,8 @@ public class SingleServerJPB1 {
                         else if(currencies.length==2)
                         {
                             //String allFlag= currencies[1];
-                            if(userName.equals("root")){
+                            if(userName.equals("root"))
+                            {
                                 for (String userFile : loginsInfo.keySet())
                                 {
                                     //go over keys in hashmap, then open file for each
@@ -236,27 +236,31 @@ public class SingleServerJPB1 {
                             }
                        }                   
                 }
-                 //end list command   
-                    
-                else if(strReceived.equalsIgnoreCase("quit")) {
-                    System.out.println("Shutting down server...");
-                    outputToClient.writeUTF("Shutting down server...");
+                //end list command   
+                else if(command.equalsIgnoreCase("logout")) 
+                {
+                    //System.out.println("Shutting down server...");
+                    outputToClient.writeUTF("200 OK");
+                    authorizedUser=false; 
+                    socket.close();      //then close the client     
+                    /*program errors if user tries to log back in
+                    no validation need*/
+                }
+                
+                //end logout command
+                else if(command.equalsIgnoreCase("SHUTDOWN"))
+                {
+                    System.out.println("\nShutting down server...");
+                    outputToClient.writeUTF("\n200 OK...");
                     serverSocket.close();//close the server
                     socket.close();      //then close the client
                     break;  //get out of loop
                 }
-
-               /* else if(command.equalsIgnoreCase("logout")) {
-                    //System.out.println("Shutting down server...");
-                    outputToClient.writeUTF("200 OK");
-                    authorizedUser=false; 
-                    socket.close();      //then close the client                       
-                }*/
+                    //end shutdown command
                 else {
                     System.out.println("Unknown command received: " 
                         + strReceived);
-                    outputToClient.writeUTF("Unknown command.  "
-                            + "Please try again.");
+                    outputToClient.writeUTF("300 invalid command");
                     }
                 } 
             }//end server loop
