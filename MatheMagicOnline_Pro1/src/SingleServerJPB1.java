@@ -20,7 +20,8 @@ public class SingleServerJPB1 {
         
        //open file and read data to hashmap
        HashMap<String, String> loginsInfo = new HashMap<String, String>();
-       String[] currencies;
+       String[] line;  //to store each client's login info  to array string
+       
         try {
             File myObj = new File("logins.txt");
             Scanner myReader = new Scanner(myObj);  
@@ -28,25 +29,26 @@ public class SingleServerJPB1 {
             while (myReader.hasNextLine()) 
             {
               String data = myReader.nextLine();
-              currencies = data.split(" ");
-              loginsInfo.put(currencies[0],currencies[1]);
+              line = data.split(" ");
+              loginsInfo.put(line[0],line[1]); //add to hashmap
             }
             myReader.close();
           } catch (FileNotFoundException e) {
             System.out.println("An error occurred.");
             e.printStackTrace();
-          }
+          }//end reading login data from a file to a hashmap
         
-        System.out.println(loginsInfo);   
+        //System.out.println(loginsInfo);   
         createCommunicationLoop(loginsInfo);
         
     }//end main
     
- 
+    
+    //function to handle the client's command 
     public static void createCommunicationLoop(HashMap<String, String> loginsInfo) {
         boolean authorizedUser=false;
-        String[] currencies;
-        String userName="", pwd="";
+        String[] clientCommand;
+        String userName="", pwd;
         
         try {
             //create server socket
@@ -55,6 +57,7 @@ public class SingleServerJPB1 {
             
             System.out.println("Server started at " +
                     new Date() + "\n");
+            
             //listen for a connection
             //using a regular *client* socket
             Socket socket = serverSocket.accept();
@@ -73,44 +76,55 @@ public class SingleServerJPB1 {
             {      
                 //login first
                 String strReceived= inputFromClient.readUTF();
-                currencies = strReceived.split(" ");
-                String command=currencies[0];
+                clientCommand = strReceived.split(" ");//read client command to string array
+                String command=clientCommand[0];
 
-                if (authorizedUser==false)
+                if (!authorizedUser)
                 {
                     if(command.equalsIgnoreCase("login"))
                     {
-                        userName=currencies[1];
-                        pwd=currencies[2];
-                        
-                        //check if username exist
-                        if(loginsInfo.containsKey(userName))
+                        //only validate data if client sent the command as 
+                        //login userName password
+                        if (clientCommand.length==3)
                         {
-                            //check if its is the right password for that usename
-                            if(loginsInfo.get(userName).equals(pwd)){
-                               outputToClient.writeUTF("You can access the server"); 
-                               authorizedUser=true;
+                            userName=clientCommand[1];
+                            pwd=clientCommand[2];
+
+                            //check if username exist
+                            if(loginsInfo.containsKey(userName))
+                            {
+                                //check if its is the right password for that usename
+                                if(loginsInfo.get(userName).equals(pwd)){
+                                    outputToClient.writeUTF("SUCCESS"); 
+                                    authorizedUser=true;
+                                }
+                                else{
+                                    outputToClient.writeUTF("FAILURE: Please provide correct username and password."
+                                                              + " Try again."); 
+                                }
                             }
                             else{
                                 outputToClient.writeUTF("Your login info is incorrect"); 
-                            }
+                            }                       
                         }
+                        //if length of array string is <3 or >3
                         else{
-                            outputToClient.writeUTF("Your login info is incorrect"); 
-                        }                       
-                    }
+                            outputToClient.writeUTF("FAILURE: Please provide correct username and password."
+                                                              + " Try again.");   
+                        }
+                    }//end validation client's login info
                     else{
                           outputToClient.writeUTF("You need to sign in first");  
                     }
-                }
+                }//end login command 
                 
+                //solve command
                 else{
-                    //solve command
                     if(command.equalsIgnoreCase("solve")) 
                     {
                         System.out.println("Sending solve to client");
                         //get solve command details
-                        String shape= currencies[1];
+                        String shape= clientCommand[1];
                         float radius, circumference,length, length2,perimeter, area;
                         
                         //create a solve file 
@@ -124,9 +138,9 @@ public class SingleServerJPB1 {
 
                         if(shape.equalsIgnoreCase("-c"))
                         {
-                            if(currencies.length==3)
+                            if(clientCommand.length==3)
                             {
-                                radius= Float.parseFloat(currencies[2]);
+                                radius= Float.parseFloat(clientCommand[2]);
                                 circumference= (float)(Math.PI*2*(radius));
                                 area= (float) (Math.PI * Math.pow(radius, 2));
 
@@ -145,9 +159,9 @@ public class SingleServerJPB1 {
                         }
                         else if(shape.equalsIgnoreCase("-r"))
                         {
-                            if(currencies.length==3)
+                            if(clientCommand.length==3)
                             {
-                                length= Float.parseFloat(currencies[2]);
+                                length= Float.parseFloat(clientCommand[2]);
                                 perimeter= (float)(4 * length);
                                 area= (float) (Math.pow(length, 2));
 
@@ -158,10 +172,10 @@ public class SingleServerJPB1 {
                                         String.format("%.2f", perimeter)
                                         + " and area is "+ String.format("%.2f" ,area)+"\n");                          
                             }
-                            else if(currencies.length==4)
+                            else if(clientCommand.length==4)
                             {
-                                length= Float.parseFloat(currencies[2]);
-                                length2= Float.parseFloat(currencies[3]);
+                                length= Float.parseFloat(clientCommand[2]);
+                                length2= Float.parseFloat(clientCommand[3]);
                                 perimeter= (float)(2*(length+length2));
                                 area= (float) (length*length2);
 
@@ -188,7 +202,7 @@ public class SingleServerJPB1 {
                       //append all data to string then send it to the client
                       String fileContent="";
                        
-                        if(currencies.length==1)
+                        if(clientCommand.length==1)
                        {
                            File myObj = new File(userName+"_solutions.txt");
                            Scanner myReader = new Scanner(myObj);
@@ -203,10 +217,10 @@ public class SingleServerJPB1 {
                        }
                         //not sure if need to validate all that, if not, length is
                         //enough to know that it is list -all
-                        else if(currencies.length==2)
+                        else if(clientCommand.length==2)
                         {
                             //String allFlag= currencies[1];
-                            if (currencies[1].equalsIgnoreCase("-all"))
+                            if (clientCommand[1].equalsIgnoreCase("-all"))
                             {
                                 if(userName.equals("root"))
                                 {
