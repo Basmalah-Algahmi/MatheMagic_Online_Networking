@@ -206,34 +206,43 @@ public class SingleServerJPB1 {
                         else if(currencies.length==2)
                         {
                             //String allFlag= currencies[1];
-                            if(userName.equals("root"))
+                            if (currencies[1].equalsIgnoreCase("-all"))
                             {
-                                for (String userFile : loginsInfo.keySet())
+                                if(userName.equals("root"))
                                 {
-                                    //go over keys in hashmap, then open file for each
-                                    //get content of the file and append it to the string
-                                    //finally, send the string to client side                               
-                                    File myObj = new File(userFile+"_solutions.txt");                                 
-                                    fileContent+= userFile+"\n";
-                                    if (myObj.exists()){
-                                        Scanner myReader = new Scanner(myObj);
-                                        System.out.println(myObj.exists());
-                                        while (myReader.hasNextLine()) 
-                                        {
-                                             String data = myReader.nextLine();
-                                             fileContent+=data+"\n";
+                                    for (String userFile : loginsInfo.keySet())
+                                    {
+                                        //go over keys in hashmap, then open file for each
+                                        //get content of the file and append it to the string
+                                        //finally, send the string to client side                               
+                                        File myObj = new File(userFile+"_solutions.txt");                                 
+                                        fileContent+= userFile+"\n";
+                                        if (myObj.exists()){
+                                            Scanner myReader = new Scanner(myObj);
+                                            System.out.println(myObj.exists());
+                                            while (myReader.hasNextLine()) 
+                                            {
+                                                 String data = myReader.nextLine();
+                                                 fileContent+=data+"\n";
+                                            }
+                                             myReader.close();
                                         }
-                                         myReader.close();
-                                    }
-                                    else{
-                                        fileContent+= "No interactions yet\n";
-                                    }                                  
+                                        else{
+                                            fileContent+= "No interactions yet\n";
+                                        }                                  
                                 }   
                                 outputToClient.writeUTF(fileContent);                              
+                                }
+                                else{
+                                    outputToClient.writeUTF("Error: you are not the root user\n");
+                                }    
                             }
-                            else{
-                                outputToClient.writeUTF("Error: you are not the root user\n");
+                            else {
+                                System.out.println("Unknown command received: " 
+                                    + strReceived);
+                                outputToClient.writeUTF("300 invalid command");
                             }
+                            
                        }                   
                 }
                 //end list command   
@@ -242,7 +251,7 @@ public class SingleServerJPB1 {
                     //System.out.println("Shutting down server...");
                     outputToClient.writeUTF("200 OK");
                     authorizedUser=false; 
-                    socket.close();      //then close the client     
+                    //socket.close();      //then close the client     
                     /*program errors if user tries to log back in
                     no validation need*/
                 }
