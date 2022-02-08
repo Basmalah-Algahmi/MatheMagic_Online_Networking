@@ -1,12 +1,9 @@
-radius 4.0: Circle’s circumference is 25.13 and area is 50.27
-Error: No sides found/exceed accabtable number of sides
-Error: No sides found/exceed accabtable number of sides
-Side 2.0 2.0: Rectangle’s perimeter is 8.00 and area is 4.00
-Side 2.0 4.0: Rectangle’s perimeter is 12.00 and area is 8.00
-Error: No sides found/exceed accabtable number of sides
-Error: No sides found/exceed accabtable number of sides
-Error: No sides found/exceed accabtable number of sides
-radius 4.0: Circle’s circumference is 25.13 and area is 50.27
 Side 4.0 4.0: Rectangle’s perimeter is 16.00 and area is 16.00
-Side 2.0 3.0: Rectangle’s perimeter is 10.00 and area is 6.00
+radius 3.0: Circle’s circumference is 18.85 and area is 28.27
+Side 12.0 12.0: Rectangle’s perimeter is 48.00 and area is 144.00
 Error: No sides found/exceed accabtable number of sides
+Error: No sides found/exceed accabtable number of sides
+Error: No sides found/exceed accabtable number of sides
+radius 25.0: Circle’s circumference is 157.08 and area is 1963.50
+Side 2.0 2.0: Rectangle’s perimeter is 8.00 and area is 4.00
+Side 3.0 4.0: Rectangle’s perimeter is 14.00 and area is 12.00
