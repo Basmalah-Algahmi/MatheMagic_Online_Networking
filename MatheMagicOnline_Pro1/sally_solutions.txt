@@ -1,3 +1,4 @@
-radius 4.0: Circle’s circumference is 25.13 and area is 50.27
-Error: No sides found/exceed accabtable number of sides
-Side 2.0 6.0: Rectangle’s perimeter is 16.00 and area is 12.00
+radius 34.0: Circle’s circumference is 213.63 and area is 3631.68
+Side 9.0 9.0: Rectangle’s perimeter is 36.00 and area is 81.00
+Side 5.0 7.0: Rectangle’s perimeter is 24.00 and area is 35.00
+Side 9.0 8.0: Rectangle’s perimeter is 34.00 and area is 72.00
